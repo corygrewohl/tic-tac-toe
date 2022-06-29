@@ -9,19 +9,31 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
+    <div id="modal-container">
+        <h1 id="modal-title"></h1>
+        <div class="modal-content">
+            <button id="play-again">
+                Play Again
+            </button>
+        </div>
+    </div>
+
+    <img src="logo.png" alt="logo" id="logo">
     <div class="container">
+        <div class="player-one-container">
+            <h1>Player 1 Score: <span id="p1-score">0</span></h1>
+            <img src="amogus.png" alt="amogus">
+        </div>
         <div class="gameboard-container" id="gameboard">
 
         </div>
-        <div id="modal-container">
-            <h1 id="modal-title"></h1>
-            <div class="modal-content">
-                <button id="play-again">
-                    Play Again
-                </button>
-            </div>
+        <div class="player-two-container">
+            <h1>Player 2 Score: <span id="p2-score">0</span></h1>
+            <img src="amogus ghost.png" alt="amogus ghost" style="height: 200px; width: 200px;">
         </div>
+        
     </div>
+    <a href="https://www.vecteezy.com/free-vector/default-avatar" class="credit" target="_blank">Default Avatar Vectors by Vecteezy</a>
     <div id="overlay"></div>
 </body>
 </html>

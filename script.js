@@ -23,13 +23,20 @@ const displayController = (() => {
         });
     }
 
+    const updatePlayerScore = () => {
+        const p1Score = document.getElementById('p1-score');
+        p1Score.textContent = player1.getScore();
+
+        const p2Score = document.getElementById('p2-score');
+        p2Score.textContent = player2.getScore();
+    }
 
     /**
      * POST GAME FUNCTIONS
      */
 
     //Opens a modal that says either winner or draw
-    const openModal = (isWin) => {
+    const openModal = (isWin, playerWinner) => {
         const modal = document.getElementById('modal-container');
         const modalTitle = document.getElementById('modal-title');
         const overlay = document.getElementById('overlay');
@@ -38,7 +45,8 @@ const displayController = (() => {
         overlay.classList.add('active')
 
         if(isWin){
-            modalTitle.textContent = "Winner"
+            modalTitle.textContent = playerWinner + " Wins!"
+            console.log(playerWinner)
         } else {
             modalTitle.textContent = "Draw"
         }
@@ -77,6 +85,7 @@ const displayController = (() => {
         generateBoard,
         highlightSquare,
         openModal,
+        updatePlayerScore,
     }
 })();
 
@@ -159,17 +168,16 @@ const gameBoard = (() => {
             //if win
             } else if (winningSquares.size != 1) {
                 const winner = document.querySelector(`[data-square="${winningSquares[0]}"]`);
+                let playerWinner;
                 if(winner.textContent == 'X'){
-                    console.log(player1.getScore())
                     player1.incrementScore();
-                    console.log(player1.getScore())
+                    playerWinner = "Player 1";
                 } else if(winner.textContent == 'O'){
-                    console.log(player2.getScore())
                     player2.incrementScore();
-                    console.log(player2.getScore())
+                    playerWinner = "Player 2";
                 }
                 displayController.highlightSquare(winningSquares);
-                displayController.openModal(true);
+                displayController.openModal(true, playerWinner);
             }
         }
         
@@ -193,15 +201,10 @@ const Player = (letter) => {
     const getLetter = () => letter;
     const incrementScore = () => score++;
 
-    const playerHandler = (letter, p2) => {
-        
-    };
-
     return {
         getScore,
         getLetter,
         incrementScore,
-        playerHandler,
     }
 };
 
@@ -213,4 +216,5 @@ const player2 = Player('O');
 
 function clicks(){
     gameBoard.clickHandler(event.target);
+    displayController.updatePlayerScore();
 }
