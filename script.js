@@ -145,12 +145,12 @@ const gameBoard = (() => {
         }
     }
 
-    //Main function of gameBoard module that runs necessary functions when a square is clicked.
-    //First checks if there already is an X or O in a square. If so, do nothing.
-    //Next sets either X or O alternating if it's a legal square.
-    //Increments numOfClicks and adds the X or O to the gameBoard array.
-    //Then runs winCheck and appropriately pops up modal for draw or for win.
-    const clickHandler = (e) => {
+    /**
+     * CLICK AND WIN HANDLING FUNCTIONS
+     */
+
+    //Used when player vs player
+    const pvpClicker = (e) => {
         if(e.innerHTML != '') return;
         if(numOfClicks % 2 == 0) {
             e.innerHTML = "X"
@@ -159,7 +159,24 @@ const gameBoard = (() => {
         };
         numOfClicks++;
         addToGameBoardArray(e.dataset.square, e.innerHTML);
+    }
 
+    //Used when player vs computer.
+    const computerClicker = (e) => {
+        if(e.innerHTML != '') return;
+        e.innerHTML = 'X';
+        addToGameBoardArray(e.dataset.square, e.innerHTML);
+
+        winHandler();
+
+        squareNum = player2.legalMove();    
+        addToGameBoardArray(squareNum, 'O');
+    }
+
+    //Does anything related to checking a win. 
+    //winHandler is inside of computerClicker to split the player's move and computer's move and get the correct winner.
+    //winHandler is outside of playerClicker to run after each individual player's move
+    const winHandler = () => {
         let winningSquares = winCheck();
         if(winningSquares != undefined){
             //if draw
@@ -180,7 +197,25 @@ const gameBoard = (() => {
                 displayController.openModal(true, playerWinner);
             }
         }
-        
+    }
+    //Main function of gameBoard module that runs necessary functions when a square is clicked.
+    //First checks if there already is an X or O in a square. If so, do nothing.
+    
+    //For player vs player:
+    //Next sets either X or O alternating if it's a legal square.
+    //Increments numOfClicks and adds the X or O to the gameBoard array.
+    
+    //For player vs computer:
+    //Display players move as X, check if they won, then display computer's move as O
+
+    //Then runs winCheck and appropriately pops up modal for draw or for win.
+    const clickHandler = (e) => {
+        if(!player2.isComputer()){
+            pvpClicker(e);
+            winHandler();
+        } else {
+            computerClicker(e);
+        }
     }
 
     //Helper function to reset gameBoard array and numOfClicks
@@ -200,19 +235,40 @@ const Player = (letter) => {
     const getScore = () => score;
     const getLetter = () => letter;
     const incrementScore = () => score++;
+    const isComputer = () => false;
 
     return {
         getScore,
         getLetter,
         incrementScore,
+        isComputer,
     }
 };
+
+const Computer = (letter, difficulty) => {
+    const prototype = Player(letter);
+    const isComputer = () => true;
+
+    const legalMove = () => {
+        const gameBoardContainer = document.getElementById('gameboard');
+        let squares = gameBoardContainer.getElementsByTagName('div');
+        for (let i = 0; i < squares.length; i++) {
+            if(squares[i].textContent == ''){
+                squares[i].textContent = letter;
+                return i;
+            };
+          }
+    };
+     
+    return Object.assign({}, prototype, {legalMove, isComputer});
+}
 
 displayController.generateBoard()
 
 //For now its just people, but we can make it computer and playerHandler() should still be able to work.
 const player1 = Player('X');
-const player2 = Player('O');
+// const player2 = Player('O');
+const player2 = Computer('O');
 
 function clicks(){
     gameBoard.clickHandler(event.target);
