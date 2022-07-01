@@ -267,8 +267,8 @@ displayController.generateBoard()
 
 //For now its just people, but we can make it computer and playerHandler() should still be able to work.
 const player1 = Player('X');
-// const player2 = Player('O');
-const player2 = Computer('O');
+const player2 = Player('O');
+// const player2 = Computer('O');
 
 function clicks(){
     gameBoard.clickHandler(event.target);
